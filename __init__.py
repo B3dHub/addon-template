@@ -14,21 +14,18 @@ bl_info = {
 
 
 import bpy
-from . import qbpy
 from . import source
 from . import preferences
 from . import changelog
 
 
 def register():
-    qbpy.register()
     source.register()
     preferences.register()
     changelog.register()
 
 
 def unregister():
-    qbpy.unregister()
     source.unregister()
     preferences.unregister()
     changelog.unregister()

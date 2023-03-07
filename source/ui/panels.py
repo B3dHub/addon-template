@@ -1,7 +1,6 @@
 import bpy
 from bpy.types import Panel
-from ... qbpy.icon import icon
-from ... qbpy.blender import preferences
+from ..utils.icon import icon
 
 
 class Addon:
