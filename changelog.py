@@ -27,9 +27,9 @@ class XX_OT_changelog(Operator):
             for added in self.changes['added']:
                 row = col.row()
                 if 'https://discord.com' in added:
-                    thread = re.search('\/(\d*)\)', added).group(1)
-                    row.label(text=added.replace(f'(https://discord.com/channels/959138815602229389/{thread})', ''), icon='MODIFIER_DATA')
-                    row.operator('wm.url_open', icon='LINKED').url=f'https://discord.com/channels/959138815602229389/{thread}'
+                    thread = re.search('\/(\d*)\)', added)[1]
+                    row.label(text=added.replace(f'(https://discord.com/channels/959138815602229389/{thread})', ''), icon='ADD')
+                    row.operator('wm.url_open', icon='LINKED', emboss=False).url=f'https://discord.com/channels/959138815602229389/{thread}'
                 else:
                     row.label(text=added, icon='ADD')
         if self.changes['changed']:
@@ -39,9 +39,9 @@ class XX_OT_changelog(Operator):
             for changed in self.changes['changed']:
                 row = col.row()
                 if 'https://discord.com' in changed:
-                    thread = re.search('\/(\d*)\)', changed).group(1)
-                    row.label(text=changed.replace(f'(https://discord.com/channels/959138815602229389/{thread})', ''), icon='MODIFIER_DATA')
-                    row.operator('wm.url_open', icon='LINKED').url=f'https://discord.com/channels/959138815602229389/{thread}'
+                    thread = re.search('\/(\d*)\)', changed)[1]
+                    row.label(text=changed.replace(f'(https://discord.com/channels/959138815602229389/{thread})', ''), icon='TRACKING_FORWARDS_SINGLE')
+                    row.operator('wm.url_open', icon='LINKED', emboss=False).url=f'https://discord.com/channels/959138815602229389/{thread}'
                 else:
                     row.label(text=changed, icon='TRACKING_FORWARDS_SINGLE')
         if self.changes['fixed']:
@@ -51,7 +51,7 @@ class XX_OT_changelog(Operator):
             for fixed in self.changes['fixed']:
                 row = col.row()
                 if 'https://discord.com' in fixed:
-                    thread = re.search('\/(\d*)\)', fixed).group(1)
+                    thread = re.search('\/(\d*)\)', fixed)[1]
                     row.label(text=fixed.replace(f'(https://discord.com/channels/959138815602229389/{thread})', ''), icon='MODIFIER_DATA')
                     row.operator('wm.url_open', icon='LINKED', emboss=False).url=f'https://discord.com/channels/959138815602229389/{thread}'
                 else:
@@ -63,9 +63,9 @@ class XX_OT_changelog(Operator):
             for improved in self.changes['improved']:
                 row = col.row()
                 if 'https://discord.com' in improved:
-                    thread = re.search('\/(\d*)\)', improved).group(1)
-                    row.label(text=improved.replace(f'(https://discord.com/channels/959138815602229389/{thread})', ''), icon='MODIFIER_DATA')
-                    row.operator('wm.url_open', icon='LINKED').url=f'https://discord.com/channels/959138815602229389/{thread}'
+                    thread = re.search('\/(\d*)\)', improved)[1]
+                    row.label(text=improved.replace(f'(https://discord.com/channels/959138815602229389/{thread})', ''), icon='SHADERFX')
+                    row.operator('wm.url_open', icon='LINKED', emboss=False).url=f'https://discord.com/channels/959138815602229389/{thread}'
                 else:
                     row.label(text=improved, icon='SHADERFX')
         if self.changes['removed']:
@@ -75,9 +75,9 @@ class XX_OT_changelog(Operator):
             for removed in self.changes['removed']:
                 row = col.row()
                 if 'https://discord.com' in removed:
-                    thread = re.search('\/(\d*)\)', removed).group(1)
-                    row.label(text=removed.replace(f'(https://discord.com/channels/959138815602229389/{thread})', ''), icon='MODIFIER_DATA')
-                    row.operator('wm.url_open', icon='LINKED').url=f'https://discord.com/channels/959138815602229389/{thread}'
+                    thread = re.search('\/(\d*)\)', removed)[1]
+                    row.label(text=removed.replace(f'(https://discord.com/channels/959138815602229389/{thread})', ''), icon='REMOVE')
+                    row.operator('wm.url_open', icon='LINKED', emboss=False).url=f'https://discord.com/channels/959138815602229389/{thread}'
                 else:
                     row.label(text=removed, icon='REMOVE')
 
