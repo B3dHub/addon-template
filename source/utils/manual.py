@@ -1,13 +1,11 @@
 import bpy
 
 
-manual = (
-    ('bpy.ops.xx.test', 'test.html'),
-)
+manual = (("bpy.ops.xx.test", "test.html"),)
 
 
 def manual_hook():
-    return ('(doc_url)', manual)
+    return ("(doc_url)", manual)
 
 
 def register():

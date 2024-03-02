@@ -4,13 +4,10 @@ from bpy.props import *
 
 
 class XX_PG_test(PropertyGroup):
+    name: StringProperty(default="Test")
 
-    name : StringProperty(default='Test')
 
-
-classes = (
-    XX_PG_test,
-)
+classes = (XX_PG_test,)
 
 
 def register():
