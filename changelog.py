@@ -22,110 +22,34 @@ class XX_OT_changelog(Operator):
             icon="RECOVER_LAST",
         )
 
-        if self.changes["added"]:
-            layout.label(text="ADDED")
-            box = layout.box()
-            col = box.column(align=True)
-            for added in self.changes["added"]:
-                row = col.row()
-                if "https://discord.com" in added:
-                    thread = re.search("\/(\d*)\)", added)[1]
-                    row.label(
-                        text=added.replace(
-                            f"(https://discord.com/channels/959138815602229389/{thread})",
-                            "",
-                        ),
-                        icon="ADD",
-                    )
-                    row.operator(
-                        "wm.url_open", icon="LINKED", emboss=False
-                    ).url = f"https://discord.com/channels/959138815602229389/{thread}"
-                else:
-                    row.label(text=added, icon="ADD")
+        for change_type, icon in [
+            ("added", "ADD"),
+            ("fixed", "MODIFIER_DATA"),
+            ("changed", "TRACKING_FORWARDS_SINGLE"),
+            ("improved", "SHADERFX"),
+            ("removed", "REMOVE"),
+        ]:
+            if self.changes[change_type]:
+                layout.label(text=change_type.upper())
+                self.draw_changes(layout, self.changes[change_type], icon)
 
-        if self.changes["fixed"]:
-            layout.label(text="FIXED")
-            box = layout.box()
-            col = box.column(align=True)
-            for fixed in self.changes["fixed"]:
-                row = col.row()
-                if "https://discord.com" in fixed:
-                    thread = re.search("\/(\d*)\)", fixed)[1]
-                    row.label(
-                        text=fixed.replace(
-                            f"(https://discord.com/channels/959138815602229389/{thread})",
-                            "",
-                        ),
-                        icon="MODIFIER_DATA",
-                    )
-                    row.operator(
-                        "wm.url_open", icon="LINKED", emboss=False
-                    ).url = f"https://discord.com/channels/959138815602229389/{thread}"
-                else:
-                    row.label(text=fixed, icon="MODIFIER_DATA")
-
-        if self.changes["changed"]:
-            layout.label(text="CHANGED")
-            box = layout.box()
-            col = box.column(align=True)
-            for changed in self.changes["changed"]:
-                row = col.row()
-                if "https://discord.com" in changed:
-                    thread = re.search("\/(\d*)\)", changed)[1]
-                    row.label(
-                        text=changed.replace(
-                            f"(https://discord.com/channels/959138815602229389/{thread})",
-                            "",
-                        ),
-                        icon="TRACKING_FORWARDS_SINGLE",
-                    )
-                    row.operator(
-                        "wm.url_open", icon="LINKED", emboss=False
-                    ).url = f"https://discord.com/channels/959138815602229389/{thread}"
-                else:
-                    row.label(text=changed, icon="TRACKING_FORWARDS_SINGLE")
-
-        if self.changes["improved"]:
-            layout.label(text="IMPROVED")
-            box = layout.box()
-            col = box.column(align=True)
-            for improved in self.changes["improved"]:
-                row = col.row()
-                if "https://discord.com" in improved:
-                    thread = re.search("\/(\d*)\)", improved)[1]
-                    row.label(
-                        text=improved.replace(
-                            f"(https://discord.com/channels/959138815602229389/{thread})",
-                            "",
-                        ),
-                        icon="SHADERFX",
-                    )
-                    row.operator(
-                        "wm.url_open", icon="LINKED", emboss=False
-                    ).url = f"https://discord.com/channels/959138815602229389/{thread}"
-                else:
-                    row.label(text=improved, icon="SHADERFX")
-
-        if self.changes["removed"]:
-            layout.label(text="REMOVED")
-            box = layout.box()
-            col = box.column(align=True)
-            for removed in self.changes["removed"]:
-                row = col.row()
-                if "https://discord.com" in removed:
-                    thread = re.search("\/(\d*)\)", removed)[1]
-                    row.label(
-                        text=removed.replace(
-                            f"(https://discord.com/channels/959138815602229389/{thread})",
-                            "",
-                        ),
-                        icon="REMOVE",
-                    )
-                    row.operator(
-                        "wm.url_open", icon="LINKED", emboss=False
-                    ).url = f"https://discord.com/channels/959138815602229389/{thread}"
-                else:
-                    row.label(text=removed, icon="REMOVE")
+    def draw_changes(self, layout, changes, icon):
+        box = layout.box()
+        col = box.column(align=True)
+        for change in changes:
+            row = col.row()
+            if "https://discord.com" in change:
+                thread = re.search("\/(\d*)\)", change)[1]
+                row.label(
+                    text=change.replace(
+                        f"(https://discord.com/channels/959138815602229389/{thread})",
+                        "",
+                    ),
+                    icon=icon,
+                )
+                row.operator("wm.url_open", icon="LINKED", emboss=False).url = f"https://discord.com/channels/959138815602229389/{thread}"
+            else:
+                row.label(text=change, icon=icon)
 
     def invoke(self, context, event):
         self.execute(context)
