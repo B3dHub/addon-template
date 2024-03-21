@@ -1,10 +1,13 @@
 import bpy
 from bpy.types import PropertyGroup
 from bpy.props import *
+from .preview import enum_previews
 
 
 class XX_PG_test(PropertyGroup):
     name: StringProperty(default="Test")
+
+    preview: EnumProperty(items=enum_previews)
 
 
 classes = (XX_PG_test,)
