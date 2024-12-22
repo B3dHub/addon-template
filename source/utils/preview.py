@@ -1,38 +1,27 @@
 import bpy
-from bpy.props import (
-    StringProperty,
-    EnumProperty,
-)
-import bpy.utils.previews
+from bpy.props import *
+from bpy.utils import previews
+
+# Built-in modules
 import os
 import re
 
 
 def enum_previews(self, context):
     """EnumProperty callback"""
-    enum_items = []
-
-    if context is None:
-        return enum_items
-
     directory = os.path.join(os.path.dirname(__file__), "../../previews")
-
-    # Get the preview collection (defined in register func).
     pcoll = preview_collections["previews"]
 
     if directory == pcoll.previews_dir:
         return pcoll.previews
 
-    # print("Scanning directory: %s" % directory)
-
-    if directory and os.path.exists(directory):
-        image_paths = [fn for fn in os.listdir(directory) if fn.lower().endswith(".png")]
-        for i, name in enumerate(image_paths):
-            # generates a thumbnail preview for a file.
+    enum_items = []
+    if os.path.exists(directory):
+        for i, name in enumerate(fn for fn in os.listdir(directory) if fn.lower().endswith(".png")):
             filepath = os.path.join(directory, name)
-            icon = pcoll.get(name)
-            thumb = pcoll[name] if icon else pcoll.load(name, filepath, "IMAGE")
-            enum_items.append((re.sub(r"\d+ ", "", name).replace(".png", ""), re.sub(r"\d+ ", "", name).replace(".png", ""), "", thumb.icon_id, i))
+            thumb = pcoll.get(name) or pcoll.load(name, filepath, "IMAGE")
+            item_name = re.sub(r"\d+ ", "", name).replace(".png", "")
+            enum_items.append((item_name, item_name, "", thumb.icon_id, i))
 
     pcoll.previews = enum_items
     pcoll.previews_dir = directory
@@ -46,7 +35,7 @@ preview_collections = {}
 
 def register():
     # Example Previews
-    pcoll = bpy.utils.previews.new()
+    pcoll = previews.new()
     pcoll.previews_dir = ""
     pcoll.previews = ()
     preview_collections["previews"] = pcoll
@@ -54,5 +43,6 @@ def register():
 
 def unregister():
     for pcoll in preview_collections.values():
-        bpy.utils.previews.remove(pcoll)
+        previews.remove(pcoll)
+
     preview_collections.clear()

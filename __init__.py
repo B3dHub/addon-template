@@ -1,11 +1,11 @@
 bl_info = {
     "name": "Addon",
     "description": "Description",
-    "author": "Author",
     "blender": (3, 3, 0),
     "version": (0, 1, 0),
     "category": "Category",
     "location": "3D Viewport > Sidebar(N-Panel) > Addon",
+    "author": "Karan",
     "support": "COMMUNITY",
     "warning": "",
     "doc_url": "",
@@ -14,6 +14,11 @@ bl_info = {
 
 
 import bpy
+
+# Built-in modules
+from contextlib import suppress
+
+# Local modules
 from . import source
 from . import preferences
 from . import changelog
@@ -28,4 +33,5 @@ def register():
 def unregister():
     source.unregister()
     preferences.unregister()
-    changelog.unregister()
+    with suppress(RuntimeError):  # to avoid crash
+        changelog.unregister()

@@ -3,15 +3,17 @@ from bpy.types import Operator
 
 
 class XX_OT_test(Operator):
-    """Lorem Ipsum.
-
-    Shift              •  Lorem Ipsum.
-    Ctrl               •  Lorem Ipsum.
-    Alt                •  Lorem Ipsum"""
-
     bl_label = "Test"
     bl_idname = "xx.test"
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER", "INTERNAL"}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    @classmethod
+    def description(cls, context, properties):
+        return "Lorem Ipsum.\n\nShift  •  Lorem Ipsum.\nCtrl    •  Lorem Ipsum.\nAlt   •  Lorem Ipsum"
 
     def invoke(self, context, event):
         return {"FINISHED"}

@@ -1,4 +1,6 @@
 import bpy
+
+# Local modules
 from . import lists
 from . import menus
 from . import panels

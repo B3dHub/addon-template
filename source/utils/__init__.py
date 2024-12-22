@@ -1,8 +1,14 @@
 import bpy
-from . import icon
+
+# Local modules
+from .addon import *
+from .icon import *
 from . import preview
 from . import props
 from . import manual
+
+
+__all__ = ["icons"]
 
 
 def register():

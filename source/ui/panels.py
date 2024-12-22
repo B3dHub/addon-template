@@ -1,6 +1,8 @@
 import bpy
 from bpy.types import Panel
-from ..utils.icon import icon
+
+# Local modules
+from ..utils import package, preferences, icons, version, version_str
 
 
 class Addon:
@@ -19,6 +21,7 @@ class Addon:
             propname=propname,
             active_propname=active_propname,
             rows=rows,
+            sort_lock=True,
         )
         col = row.column(align=True)
         col.scale_x = 1.1
@@ -35,8 +38,7 @@ class XX_PT_object_mode(Panel, Addon):
     def draw(self, context):
         layout = self.layout
         layout.use_property_decorate = False
-        layout.scale_x = 1.2
-        layout.scale_y = 1.2
+        layout.use_property_split = True
 
         prop = context.scene.test
 
@@ -55,8 +57,6 @@ class XX_PT_edit_mode(Panel, Addon):
     def draw(self, context):
         layout = self.layout
         layout.use_property_decorate = False
-        layout.scale_x = 1.2
-        layout.scale_y = 1.2
 
         prop = context.scene.test
 
@@ -65,8 +65,12 @@ class XX_PT_edit_mode(Panel, Addon):
 
 
 class XX_PT_help(Panel, Addon):
-    bl_label = "Help"
+    bl_label = f"Help - v{version_str}"
     bl_options = {"DEFAULT_CLOSED"}
+
+    def draw_header_preset(self, context):
+        layout = self.layout
+        layout.operator("preferences.addon_show", icon="PREFERENCES", emboss=False).module = package
 
     def draw(self, context):
         layout = self.layout
@@ -75,11 +79,12 @@ class XX_PT_help(Panel, Addon):
         layout.scale_y = 1.2
 
         col = layout.column()
-        col.operator("xx.changelog", icon="RECOVER_LAST")
+        if version >= (1, 0, 1):
+            col.operator("xx.changelog", icon="RECOVER_LAST")
         col.operator("wm.url_open", text="Documentation", icon="HELP").url = ""
         col.operator("wm.url_open", text="Report a Bug", icon="URL").url = "https://discord.gg/sdnHHZpWbT"
-        col.operator("wm.url_open", text="Blender Market", icon_value=icon["B_MARKET"]).url = "https://blendermarket.com/account/orders"
-        col.operator("wm.url_open", text="Gumroad", icon_value=icon["GUMROAD"]).url = "https://app.gumroad.com/library"
+        col.operator("wm.url_open", text="Blender Market", icon_value=icons["B_MARKET"]).url = "https://blendermarket.com/account/orders"
+        col.operator("wm.url_open", text="Gumroad", icon_value=icons["GUMROAD"]).url = "https://app.gumroad.com/library"
 
 
 classes = (

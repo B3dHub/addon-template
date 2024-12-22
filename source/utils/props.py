@@ -1,12 +1,14 @@
 import bpy
 from bpy.types import PropertyGroup
 from bpy.props import *
+
+# Local modules
 from .preview import enum_previews
 
 
 class XX_PG_test(PropertyGroup):
-    name: StringProperty(default="Test")
 
+    name: StringProperty(default="Test")
     preview: EnumProperty(items=enum_previews)
 
 

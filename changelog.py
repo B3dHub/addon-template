@@ -1,9 +1,13 @@
 import bpy
 from bpy.types import Operator
-from . import bl_info
-from collections import defaultdict
+
+# Built-in modules
 import re
 import os
+from collections import defaultdict
+
+# Local modules
+from .source.utils import version_str
 
 
 class XX_OT_changelog(Operator):
@@ -18,7 +22,7 @@ class XX_OT_changelog(Operator):
         layout.scale_x = 1.2
 
         layout.label(
-            text=f"Changelog - v{'.'.join(map(str, bl_info.get('version')))}",
+            text=f"Changelog - v{version_str}",
             icon="RECOVER_LAST",
         )
 
@@ -87,5 +91,6 @@ class XX_OT_changelog(Operator):
 
 
 classes = (XX_OT_changelog,)
+
 
 register, unregister = bpy.utils.register_classes_factory(classes)
