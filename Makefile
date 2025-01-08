@@ -9,14 +9,16 @@ wheel:
 sync_branch:
 	$(eval branch ?= dev)
 	git fetch origin
-	git checkout $(branch) 2>/dev/null || git checkout -b $(branch) origin/$(branch)
+	git checkout $(branch)
 	git pull origin $(branch)
 	git push origin $(branch)
 
 # Create and merge PR from dev to main
 create_pr:
-	$(eval VERSION := $(shell python -c "import toml; print(toml.load('blender_manifest.toml')['version'])"))
-	gh pr create --base main --head dev --title "Version $(VERSION)" --body "$(shell cat CHANGELOG.md)"
+	@pip install toml --quiet || python -m pip install toml --quiet
+	$(eval VERSION := $(shell powershell -command "python -c \"import toml; print(toml.load('blender_manifest.toml')['version'])\""))
+
+	gh pr create --base main --head dev --title "Version $(VERSION)" --body-file CHANGELOG.md
 
 merge_pr:
 	gh pr merge --auto --merge

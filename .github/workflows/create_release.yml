@@ -1,34 +1,13 @@
-# Commit message: "Version 1.2.3" will trigger this workflow
-
 name: Create Release
 
 on:
   push:
     branches:
       - main
-    paths-ignore:
-      - '**'
-  workflow_dispatch:
 
 jobs:
-  check_commit:
-    runs-on: ubuntu-latest
-    outputs:
-      should_run: ${{ steps.check_message.outputs.match }}
-    steps:
-      - uses: actions/checkout@v3
-      - id: check_message
-        run: |
-            MSG=$(git log -1 --pretty=%B)
-            if [[ $MSG =~ ^Version ]]; then
-                echo "match=true" >> $GITHUB_OUTPUT
-            else
-                echo "match=false" >> $GITHUB_OUTPUT
-            fi
-
   create_release:
-    needs: check_commit
-    if: needs.check_commit.outputs.should_run == 'true'
+    if: github.repository != 'B3dHub/addon-template'
     runs-on: ubuntu-latest
 
     steps:
@@ -37,22 +16,32 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install TOML package
+        run: pip install toml
+
       - name: Get version from blender_manifest.toml
         id: get_version
         run: |
-          VERSION=$(toml get blender_manifest.toml package.version | tr -d '"')
+          VERSION=$(python -c "import toml; print(toml.load('blender_manifest.toml')['version'])")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create the zip file
         id: create_zip
         run: |
           repo_name=$(basename ${{ github.repository }})
-          git clone --recurse-submodules ${{ github.server_url }}/${{ github.repository }}
+          gh repo clone ${{ github.repository }} -- --recurse-submodules
           cd $repo_name
           rm -rf .git .github
           cd ..
           zip -r "$repo_name"_v${{ steps.get_version.outputs.version }}.zip $repo_name
           echo "zip_file=$repo_name"_v${{ steps.get_version.outputs.version }}.zip >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
