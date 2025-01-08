@@ -1,9 +1,7 @@
-import bpy
-from bpy.utils import previews
-
-# Built-in modules
 import os
 
+import bpy
+from bpy.utils import previews
 
 preview_collections = {}
 icons = {}

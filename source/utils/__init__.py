@@ -1,12 +1,8 @@
 import bpy
 
-# Local modules
+from . import manual, preview, props
 from .addon import *
 from .icon import *
-from . import preview
-from . import props
-from . import manual
-
 
 __all__ = ["icons"]
 

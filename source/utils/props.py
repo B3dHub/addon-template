@@ -1,8 +1,7 @@
 import bpy
-from bpy.types import PropertyGroup
 from bpy.props import *
+from bpy.types import PropertyGroup
 
-# Local modules
 from .preview import enum_previews
 
 

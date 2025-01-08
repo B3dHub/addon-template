@@ -1,10 +1,15 @@
+from typing import List
+
 import bpy
 from bpy.types import UILayout
 
-# Built-in modules
-from typing import List
-
-__all__ = ["addon_keymaps", "get_keymap_items", "convert_keymap_item_to_string", "register", "unregister"]
+__all__ = [
+    "addon_keymaps",
+    "get_keymap_items",
+    "convert_keymap_item_to_string",
+    "register",
+    "unregister",
+]
 
 
 addon_keymaps = []
@@ -23,7 +28,9 @@ def get_keymap_items(idname: str) -> List[bpy.types.KeyMapItem]:
     kc = bpy.context.window_manager.keyconfigs.user
     for addon_km in addon_keymaps:
         km = kc.keymaps[addon_km.name].active()
-        matching_keymap_items.extend(kmi for kmi in km.keymap_items if kmi.idname == idname)
+        matching_keymap_items.extend(
+            kmi for kmi in km.keymap_items if kmi.idname == idname
+        )
     return matching_keymap_items
 
 
@@ -42,7 +49,9 @@ def convert_keymap_item_to_string(keymap_item: bpy.types.KeyMapItem) -> str:
         return " + ".join(text.split(" "))
     elif keymap_item.map_type == "MOUSE":
         *split, last = text.split(" ")
-        split.append(f"{UILayout.enum_item_name(keymap_item, 'value', keymap_item.value)} ({last})")
+        split.append(
+            f"{UILayout.enum_item_name(keymap_item, 'value', keymap_item.value)} ({last})"
+        )
         return " + ".join(split)
 
 

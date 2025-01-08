@@ -1,6 +1,6 @@
 import bpy
-from bpy.types import AddonPreferences, PropertyGroup
 from bpy.props import *
+from bpy.types import AddonPreferences, PropertyGroup
 
 
 class XX_AP_preference(AddonPreferences):

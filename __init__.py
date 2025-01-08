@@ -15,23 +15,14 @@ bl_info = {
 
 import bpy
 
-# Built-in modules
-from contextlib import suppress
-
-# Local modules
-from . import source
-from . import preferences
-from . import changelog
+from . import preferences, source
 
 
 def register():
     source.register()
     preferences.register()
-    changelog.register()
 
 
 def unregister():
     source.unregister()
     preferences.unregister()
-    with suppress(RuntimeError):  # to avoid crash
-        changelog.unregister()

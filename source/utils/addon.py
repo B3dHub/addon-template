@@ -1,8 +1,7 @@
 import bpy
 
-# Local modules
-from ... import __package__ as package, bl_info
-
+from ... import __package__ as package
+from ... import bl_info
 
 __all__ = ["package", "preferences", "version", "version_str"]
 

@@ -1,6 +1,5 @@
 import bpy
 
-
 manual = (("bpy.ops.xx.test", "test.html"),)
 
 

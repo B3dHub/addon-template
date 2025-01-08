@@ -1,0 +1,70 @@
+# Commit message: "Version 1.2.3" will trigger this workflow
+
+name: Create Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  check_commit:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check_message.outputs.match }}
+    steps:
+      - uses: actions/checkout@v3
+      - id: check_message
+        run: |
+            MSG=$(git log -1 --pretty=%B)
+            if [[ $MSG =~ ^Version ]]; then
+                echo "match=true" >> $GITHUB_OUTPUT
+            else
+                echo "match=false" >> $GITHUB_OUTPUT
+            fi
+
+  create_release:
+    needs: check_commit
+    if: needs.check_commit.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get version from blender_manifest.toml
+        id: get_version
+        run: |
+          VERSION=$(toml get blender_manifest.toml package.version | tr -d '"')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create the zip file
+        id: create_zip
+        run: |
+          repo_name=$(basename ${{ github.repository }})
+          git clone --recurse-submodules ${{ github.server_url }}/${{ github.repository }}
+          cd $repo_name
+          rm -rf .git .github
+          cd ..
+          zip -r "$repo_name"_v${{ steps.get_version.outputs.version }}.zip $repo_name
+          echo "zip_file=$repo_name"_v${{ steps.get_version.outputs.version }}.zip >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          target_commitish: main
+          name: Version ${{ steps.get_version.outputs.version }}
+          draft: true
+          prerelease: false
+          generate_release_notes: false
+          body_path: CHANGELOG.md
+          files: |
+            ${{ steps.create_zip.outputs.zip_file }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

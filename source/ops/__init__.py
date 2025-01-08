@@ -1,12 +1,13 @@
 import bpy
 
-# Local modules
-from . import test
+from . import changelog, test
 
 
 def register():
+    changelog.register()
     test.register()
 
 
 def unregister():
+    changelog.unregister()
     test.unregister()

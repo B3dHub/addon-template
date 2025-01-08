@@ -1,13 +1,11 @@
+import os
+import re
+from collections import defaultdict
+
 import bpy
 from bpy.types import Operator
 
-# Built-in modules
-import re
-import os
-from collections import defaultdict
-
-# Local modules
-from .source.utils import version_str
+from ..utils import version_str
 
 
 class XX_OT_changelog(Operator):
@@ -18,13 +16,8 @@ class XX_OT_changelog(Operator):
 
     def draw(self, context):
         layout = self.layout
-        layout.scale_y = 1.2
-        layout.scale_x = 1.2
 
-        layout.label(
-            text=f"Changelog - v{version_str}",
-            icon="RECOVER_LAST",
-        )
+        layout.label(text=f"Changelog - v{version_str}", icon="RECOVER_LAST")
 
         for change_type, icon in [
             ("added", "ADD"),
@@ -34,7 +27,7 @@ class XX_OT_changelog(Operator):
             ("removed", "REMOVE"),
         ]:
             if self.changes[change_type]:
-                layout.label(text=change_type.upper())
+                layout.label(text=change_type.title())
                 self.draw_changes(layout, self.changes[change_type], icon)
 
     def draw_changes(self, layout, changes, icon):
@@ -51,7 +44,9 @@ class XX_OT_changelog(Operator):
                     ),
                     icon=icon,
                 )
-                row.operator("wm.url_open", icon="LINKED", emboss=False).url = f"https://discord.com/channels/959138815602229389/{thread}"
+                row.operator("wm.url_open", icon="LINKED", emboss=False).url = (
+                    f"https://discord.com/channels/959138815602229389/{thread}"
+                )
             else:
                 row.label(text=change, icon=icon)
 
@@ -62,20 +57,11 @@ class XX_OT_changelog(Operator):
     def execute(self, context):
         self.changes = defaultdict(list)
 
-        with open(os.path.join(os.path.dirname(__file__), "README.md"), "r") as file:
-            changlog_start = False
+        with open(os.path.join(os.path.dirname(__file__), "../../CHANGELOG.md"), "r") as file:
             key = None
 
             for line in file:
                 line = line.strip()
-
-                if line.startswith("## Changelog"):
-                    changlog_start = True
-                elif line.startswith("##"):
-                    changlog_start = False
-
-                if not changlog_start:
-                    continue
 
                 if line.startswith("**"):
                     key = line.split("**")[1].lower()
