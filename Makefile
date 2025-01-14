@@ -1,28 +1,60 @@
-# Create wheel for qbpy package
+# ===========================================
+# Package Building and Distribution
+# ===========================================
+
+# Create wheel for qbpy package and organize output
 wheel:
 	python setup.py build bdist_wheel
 	if not exist wheels mkdir wheels
 	if exist dist\*.whl cmd /c "move dist\*.whl wheels"
 	cmd /c "rmdir /s /q build dist qbpy.egg-info"
 
-# Sync the branch with remote, default is dev
-sync_branch:
+# ===========================================
+# Git Operations
+# ===========================================
+
+# Sync local branch with remote (defaults to dev branch)
+sync:
 	$(eval branch ?= dev)
 	git fetch origin
 	git checkout $(branch)
 	git pull origin $(branch)
-	git push origin $(branch)
 
-# Create and merge PR from dev to main
+# Build project using build.bat script (defaults to dev branch)
+build:
+	$(eval branch ?= dev)
+	cmd /c "build.bat $(branch)"
+	@echo "Successfully built the release zip"
+
+# ===========================================
+# Pull Request Management
+# ===========================================
+
+# Create PR from dev to main using version from toml file
 create_pr:
 	@pip install toml --quiet || python -m pip install toml --quiet
 	$(eval VERSION := $(shell powershell -command "python -c \"import toml; print(toml.load('blender_manifest.toml')['version'])\""))
-
 	gh pr create --base main --head dev --title "Version $(VERSION)" --body-file CHANGELOG.md
 
+# Merge PR automatically
 merge_pr:
 	gh pr merge --auto --merge
-
-# Full workflow to create and merge PR
-release: sync_branch create_pr merge_pr
 	@echo "Successfully merged dev into main"
+
+# ===========================================
+# Release Management
+# ===========================================
+
+# Create GitHub release with version tag and release assets
+create_release:
+	$(eval version ?= $(VERSION))
+	$(eval ROOT_DIR := $(notdir $(CURDIR)))
+	gh release create "v$(version)" --target main --title "Version $(version)" --notes-file CHANGELOG.md releases/$(ROOT_DIR)_v$(version).zip
+
+# ===========================================
+# Complete Release Workflow
+# ===========================================
+
+# Execute full release process: sync, build, PR creation/merge, and release
+release: sync build create_pr merge_pr create_release
+	@echo "Successfully created release"
