@@ -21,7 +21,7 @@ commit:
 	git add .
 	git status
 	git commit -m "$(msg)"
-	git push origin dev || (echo "Push failed. Does the dev branch exist?" && exit 1)
+	git push origin
 
 %:
 	@:
